@@ -22,9 +22,16 @@ def showAll():
 def addRecord():
     name = input('Enter Name of Record Holder: ')
     country = input('Enter Country of Record Holder: ')
-    stringCatches = input('Enter the recorded number of catches')
+    stringCatches = input('Enter the recorded number of catches: ')
     catches = ui.getPositiveInt(stringCatches)
     dbManager.addNewRecord(name, country, catches)
 
 def updateRecord():
-    ui.getUpdateChoice()
+    present = ui.getUpdateChoice()
+
+def deleteRecord():
+    showAll()
+    name = input('Enter Name of Record Holder whose Record you want to delete: ')
+    present = dbManager.getRecord(name)
+    if (present == True):
+        dbManager.delRecordDB(name)

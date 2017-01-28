@@ -1,5 +1,6 @@
 import sqlite3
 import traceback
+import ui
 db = sqlite3.connect('chainsawRecordsDB.db')
 cur = db.cursor()
 def setup():
@@ -32,16 +33,23 @@ def addNewRecord(name, country, catches):
     print('New record added to database')
 
 def getRecord(name):
-    data = cur.execute('select * from records where name = ?', (name))
-    if (len(data) !=0):
-        updateRec(name)
+    cur.execute('select * from records where name = ?', (name,))
+    data = cur.fetchall()
+    if (len(data) != 0):
+        return True
     else:
         print('Record not found, please try again')
+        return False
 
 def updateRec(name):
     print ('Enter the new number of catches for '+name)
     stringCa= input()
-    catc = getPositiveInt(stringCa)
+    catc = ui.getPositiveInt(stringCa)
     cur.execute('update records set catches = ? where name = ?', (catc, name))
-    cur.commit()
-    print
+    db.commit()
+    print('Record Updated')
+
+def delRecordDB(name):
+    cur.execute('delete from records where name = ?', (name,))
+    db.commit()
+    print("Record Deleted")

@@ -46,7 +46,9 @@ def getUpdateChoice():
     print('Enter the name of the record holder ')
     print('whose catch record has changed: ')
     choice = input()
-    dbManager.getRecord(choice)
+    present = dbManager.getRecord(choice)
+    if (present == True):
+        dbManager.updateRec(choice)
 
 if __name__ == '__main__':
     main()
