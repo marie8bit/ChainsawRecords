@@ -1,14 +1,18 @@
 import sqlite3
 import traceback
 import ui
+#create and/or connect with the database file
 db = sqlite3.connect('chainsawRecordsDB.db')
 cur = db.cursor()
+#create table and 3 rows of data if it is the first time the application is run
+#
 def setup():
     try:
 
         cur.execute('create table if not exists records (name text, country text, catches int)')
         cur.execute('select * from records')
         data = cur.fetchall()
+        #adds first three rows if the table is empty
         if (len(data)==0):
             cur.execute('insert into records values ("Ian Stewart", "Canada", 94)')
             cur.execute('insert into records values ("Aaron Gregg", "Canada", 88)')
@@ -27,6 +31,11 @@ def setup():
     # finally:
     #     print('closing database')
     #     db.close()
+def showAll():
+    cur.execute('select * from records')
+    for row in cur:
+        print (row)
+
 def addNewRecord(name, country, catches):
     cur.execute('insert into records values (?, ?, ?)', (name, country, catches))
     db.commit()
@@ -38,7 +47,6 @@ def getRecord(name):
     if (len(data) != 0):
         return True
     else:
-        print('Record not found, please try again')
         return False
 
 def updateRec(name):

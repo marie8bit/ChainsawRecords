@@ -1,10 +1,9 @@
 import ui, dbManager
 import sqlite3
-db = sqlite3.connect('chainsawRecordsDB.db')
-cur = db.cursor()
+#process choice from user
 def handle_choice(choice):
     if choice == '1':
-        showAll()
+        dbManager.showAll()
     if choice == '2':
         addRecord()
     if choice == '3':
@@ -13,25 +12,26 @@ def handle_choice(choice):
         deleteRecord()
     if choice == 'q':
         quit()
-
-def showAll():
-    cur.execute('select * from records')
-    for row in cur:
-        print (row)
-
+#Get new record data
 def addRecord():
     name = input('Enter Name of Record Holder: ')
-    country = input('Enter Country of Record Holder: ')
-    stringCatches = input('Enter the recorded number of catches: ')
-    catches = ui.getPositiveInt(stringCatches)
-    dbManager.addNewRecord(name, country, catches)
+    #enforces uniqueness of primary key
+    if (dbManager.getRecord(name)):
+        print("This record already exists, choose to update a record")
+    else:
+        country = input('Enter Country of Record Holder: ')
+        stringCatches = input('Enter the recorded number of catches: ')
+        catches = ui.getPositiveInt(stringCatches)
+        dbManager.addNewRecord(name, country, catches)
 
 def updateRecord():
-    present = ui.getUpdateChoice()
+    ui.getUpdateChoice()
 
 def deleteRecord():
-    showAll()
+    dbManager.showAll()
     name = input('Enter Name of Record Holder whose Record you want to delete: ')
-    present = dbManager.getRecord(name)
-    if (present == True):
+    #verifies existance of record before trying to delete it/validates input
+    if (dbManager.getRecord(name)):
         dbManager.delRecordDB(name)
+    else:
+        print('Record not found, please try again')
